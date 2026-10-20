@@ -54,12 +54,7 @@ public struct DoubleSide<Front: View, Back: View>: View {
 
 private extension DoubleSide {
     var angle: Angle {
-        switch side {
-        case .front:
-            .degrees(0)
-        case .back:
-            reversed ? .degrees(-180) : .degrees(180)
-        }
+        reversed ? -side.angle : side.angle
     }
 }
 
@@ -67,7 +62,11 @@ private extension DoubleSide {
 #Preview {
     @Previewable
     @State
-    var side: Side = .front
+    var side: Side = .angle(.zero)
+
+    @Previewable
+    @State
+    var shading = false
 
     HStack {
         DoubleSide(side,
@@ -82,7 +81,7 @@ private extension DoubleSide {
 
                    })
 
-        DoubleSide(side, reversed: true, front: { _ in
+        DoubleSide(side, reversed: false, front: { _ in
             PreviewContent(color: .purple, systemName: "moon.stars.fill")
         }, back: { _ in
             PreviewContent(color: .mint, systemName: "cloud.moon.fill")
@@ -108,11 +107,21 @@ private extension DoubleSide {
 
         })
     }
-    Button("Toggle") {
-        withAnimation {
-            side.toggle()
+    .doubleSideStyle(shading ? .shading : .default)
+    HStack {
+        Button("Toggle") {
+            withAnimation {
+                side.toggle()
+            }
         }
+        Toggle("Shading", isOn: $shading)
     }
+
+    Slider(value: .init(get: {
+        side.angle.degrees
+    }, set: { degrees in
+        side = .angle(Angle(degrees: degrees))
+    }), in: 0 ... 360)
 }
 
 @available(iOS 18.0, macOS 15.0, *)

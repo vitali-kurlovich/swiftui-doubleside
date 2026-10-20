@@ -2,7 +2,6 @@
 //  Created by Kurlovich Vitali on 5/16/26.
 //
 
-import CGMathKit
 import SwiftUI
 
 struct DoubleSideView<Front: View, Back: View>: View {
@@ -92,11 +91,10 @@ extension DoubleSideView: @MainActor Animatable {
 private extension DoubleSideView {
     @ViewBuilder
     func content(_ angle: Angle) -> some View {
-        switch currentSide {
-        case .front:
-            front(phase(for: angle))
-        case .back:
+        if angle.isBackSide {
             back(phase(for: angle))
+        } else {
+            front(phase(for: angle))
         }
     }
 }
@@ -107,7 +105,7 @@ private extension DoubleSideView {
         case .default:
             return 0
         case .shading:
-            let br = abs(dot)
+            let br = abs(sin(angle.radians))
             return br > (1.0 / 512.0) ? -br * brightnessConstant : 0
         }
     }
@@ -115,35 +113,16 @@ private extension DoubleSideView {
     var brightnessConstant: Double {
         switch colorScheme {
         case .dark:
-            0.4
+            0.2
         case .light:
-            0.2
+            0.1
         @unknown default:
-            0.2
+            0.1
         }
     }
 
-    var currentSide: Side {
-        angle.side
-    }
-
     func phase(for angle: Angle) -> CGFloat {
-        1.0 - abs(dot(for: angle))
-    }
-
-    func dot(for angle: Angle) -> CGFloat {
-        CGVector(dx: 1, dy: 0)
-            .dot(CGVector(dx: 0, dy: 1).rotated(angle))
-    }
-
-    var dot: CGFloat {
-        dot(for: angle)
-    }
-
-    var cross: CGFloat {
-        CGVector(dx: 1, dy: 0)
-            .cross(CGVector(dx: 0, dy: 1)
-                .rotated(angle))
+        1 - abs(sin(angle.radians))
     }
 }
 
@@ -176,5 +155,5 @@ private extension DoubleSideView {
                 Text(phase, format: .number)
             }
         }
-    }
+    }.doubleSideStyle(.shading)
 }
