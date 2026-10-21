@@ -99,7 +99,7 @@ private extension DoubleSide {
 
                    })
 
-        DoubleSide(side, anchor: .trailing, front: { _ in
+        DoubleSide(side, axis: (x: 1, y: 0, z: 0), reversed: false, front: { _ in
             PreviewContent(color: .purple, systemName: "moon.stars.fill")
         }, back: { _ in
             PreviewContent(color: .mint, systemName: "cloud.moon.fill")

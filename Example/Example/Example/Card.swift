@@ -64,13 +64,13 @@ struct Card: View {
              axis: (x: 0, y: 1, z: 0),
              frontImageName: "girl",
              backImageName: "wolf")
-        
+
         Card(side: .angle(.degrees(30)),
              axis: (x: 1, y: 1, z: 0),
              frontImageName: "girl",
              backImageName: "nature_lake", backRotate:
-                .degrees(-90))
-        
+             .degrees(-90))
+
         Card(
             side: .front,
             frontImageName: "girl",

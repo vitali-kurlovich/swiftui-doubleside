@@ -8,38 +8,54 @@ struct ContentView: View {
     @State
     var shading: Bool = false
 
-    @State
-    var size: CGFloat = 120
+    @AppStorage("CardSize")
+    var size: Double = 120
 
     var body: some View {
         ScrollView(.horizontal) {
             LazyHStack(spacing: 24) {
-                Card(side: side, axis: (x: 0, y: 1, z: 0),
-                     frontImageName: "girl", backImageName: "wolf")
+                Card(side: side,
+                     axis: (x: 0, y: 1, z: 0),
+                     frontImageName: "girl",
+                     backImageName: "wolf")
                     .frame(height: size)
 
                 Card(side: side,
-                     frontImageName: "nature_lake_2", backImageName: "nature_lake")
+                     frontImageName: "nature_lake_2",
+                     backImageName: "nature_lake",
+                     backScale: (x: 1, y: -1))
                     .frame(height: size)
 
-                Card(side: side, axis: (x: 1, y: 1, z: 0), frontImageName: "books", backImageName: "paper", backRotate:
-                    .degrees(-90))
+                Card(side: side,
+                     axis: (x: 1, y: 1, z: 0),
+                     frontImageName: "books",
+                     backImageName: "paper",
+                     backRotate: .degrees(-90))
                     .frame(height: size)
 
-                Card(side: side, frontImageName: "nature_lake", backImageName: "wolf")
-                    .frame(height: size)
+                Card(
+                    side: side,
+                    reversed: true,
+                    frontImageName: "nature_lake",
+                    backImageName: "wolf",
+                    backScale: (x: 1, y: -1)
+                )
+                .frame(height: size)
 
-                Card(side: side, frontImageName: "flower", backImageName: "food")
+                Card(side: side,
+                     frontImageName: "flower",
+                     backImageName: "food")
                     .frame(height: size)
             }
             .shadow(radius: 12)
+            .padding()
             .doubleSideStyle(shading ? .shading : .default)
 
         }.overlay(alignment: .bottom) {
             VStack {
                 HStack {
                     Button("Toggle") {
-                        withAnimation {
+                        withAnimation(.bouncy) {
                             side.toggle()
                         }
                     }
@@ -56,6 +72,7 @@ struct ContentView: View {
             .background {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Material.regular)
+                    .padding(6)
             }
         }
         .toolbar {
